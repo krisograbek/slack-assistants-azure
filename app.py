@@ -10,6 +10,7 @@ from functions import chat_completion
 import logging
 from functools import wraps
 import time
+import json
 import sys
 
 # Configure the logging level and format
@@ -26,6 +27,8 @@ load_dotenv(find_dotenv())
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
 SLACK_BOT_USER_ID = os.environ["SLACK_BOT_USER_ID"]
+
+print(f"Slack bot id: {SLACK_BOT_USER_ID}")
 
 # Initialize the Slack app
 app = App(token=SLACK_BOT_TOKEN)
@@ -104,7 +107,19 @@ def handle_mentions(body, say):
         body (dict): The event data received from Slack.
         say (callable): A function for sending a response to the channel.
     """
+    # Pretty print the body with json.dumps
+    # We need to do that to identify the channel...
+    pretty_body = json.dumps(body, indent=4)
+    logging.info(f"User sent message with the following: {pretty_body}")
     text = body["event"]["text"]
+
+    channel = body.get("event").get("channel")
+    if channel == "C07QSA4323E":
+        print("You are in the copywriting channel!")
+    elif channel == "C07QPRC3Z6U":
+        print("You are in the testing channel!")
+    else:
+        print("I don't know your channel...")
 
     mention = f"<@{SLACK_BOT_USER_ID}>"
     text = text.replace(mention, "").strip()
