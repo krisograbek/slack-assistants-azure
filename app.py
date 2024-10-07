@@ -97,6 +97,16 @@ def my_function(text):
     return response
 
 
+# test
+@app.command("/echo")
+def repeat_text(ack, respond, command):
+    # Acknowledge command request
+    ack()
+
+    # Respond with the text entered after the slash command
+    respond(f"{command['text']}")
+
+
 @app.event("app_mention")
 def handle_mentions(body, say):
     """
@@ -125,7 +135,12 @@ def handle_mentions(body, say):
     text = text.replace(mention, "").strip()
     logging.info("Received text: " + text.replace("\n", " "))
 
-    say("Sure, I'll get right on that!")
+    say("I've got your instructions!")
+    # Here I want to find out, which task I'll do
+    # find_task(text)
+    # Placeholder
+    # say(find_task)
+
     # response = my_function(text)
     response = chat_completion(text)
     logging.info("Generated response: " + response.replace("\n", " "))
